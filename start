@@ -1,0 +1,5 @@
+#!/bin/bash
+source __env__/bin/activate
+pushd src > /dev/null
+gunicorn app:app
+popd > /dev/null

@@ -1,0 +1,47 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+MODULES_FILE="requirements.txt"
+
+function new_env
+{
+	if [ -z $1 ]
+	then
+		NEW_ENV="virtualenv"
+	else
+		NEW_ENV="$1/virtualenv"
+	fi
+	echo "Install new virtual environment:"
+
+	$NEW_ENV __env__
+}
+
+function install_modules
+{
+	cat $MODULES_FILE | xargs pip install
+}
+
+function activate_env
+{
+	source "__env__/bin/activate"
+}
+
+function deactivate_env
+{
+	deactivate
+}
+
+function main
+{
+	if [ ! -d "__env__" ]
+	then
+		new_env $1
+	fi
+
+	activate_env
+	install_modules
+	deactivate_env
+}
+
+pushd $DIR > /dev/null
+main $1
+popd > /dev/null

@@ -1,28 +1,46 @@
 import falcon
+import json
+from pascua import *
+from base_resource import BaseResource
+from datetime import datetime
+
+
+class UserModel(PascuaModel):
+    def __init__(self, obj=None, errors=[]):
+        super(UserModel, self).__init__(obj, errors)
+        self['timestamp'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+
+    @staticmethod
+    def get_fields():
+        return {
+            'name': PascuaString(mandatory=True),
+            'surname': PascuaString(),
+            'email': PascuaMail(mandatory=True)
+        }
 
 
 # Falcon follows the REST architectural style, meaning (among
 # other things) that you think in terms of resources and state
 # transitions, which map to HTTP verbs.
-class NewUserResource(object):
+class NewUserResource(BaseResource):
     def __init__(self):
-        self.version = 0
-        self.description = ('\nNew User:\n'
-                            '   - Insert a user into database.\n')
+        super(NewUserResource, self).__init__(
+            ('\nNew User:\n'
+             '   - Insert a user into database.\n'), model=UserModel)
 
-    def on_get(self, req, resp):
-        """Handles GET requests"""
-        resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = self.description
+    def process(self, req, resp, errors):
+        data = json.loads(req.stream.read())
+        user = UserModel(data, errors=errors)
+
+        resp.status = falcon.HTTP_201
+        return user
 
 
-class GetUsersResource(object):
+class GetUsersResource(BaseResource):
     def __init__(self):
-        self.version = 0
-        self.description = ('\nGet Users:\n'
-                            '   - Get all users from the database. Login needed.\n')
+        super(GetUsersResource, self).__init__(
+            ('\nGet Users:\n'
+             '   - Get all users from the database. Login needed.\n'))
 
-    def on_get(self, req, resp):
-        """Handles GET requests"""
-        resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = self.description
+    def process(self, req, resp):
+        pass

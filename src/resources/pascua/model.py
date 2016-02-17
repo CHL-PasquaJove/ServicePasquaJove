@@ -1,41 +1,44 @@
 from abc import ABCMeta, abstractmethod
 from errors import PascuaError
 import error_types
+from exceptions import PascuaFieldError
+from base_error_codes import pascua_error_codes
 
 
 class PascuaModel(dict):
     __metaclass__ = ABCMeta
 
-    def __init__(self, obj=None, errors=[]):
+    def __init__(self, obj=None, errors=None):
         self.fields = self.get_fields()
         if obj is not None:
-            self.errors = errors
             for key in self.fields:
                 field = self.fields[key]
                 if key in obj:
-                    self.validate_field(key, obj[key], field)
-                elif field.mandatory:
-                    self.add_err(PascuaError(
+                    self.validate_field(key, obj[key], field, errors)
+                elif errors is not None and field.mandatory:
+                    errors.append(PascuaError(
                         type=error_types.WRONG_FIELD,
                         description='The field ' + key + ' is mandatory ',
-                        field=key
+                        field=key,
+                        code=pascua_error_codes['MANDATORY_FIELD']
                     ))
 
-    def validate_field(self, key, value, field):
+        if errors is not None and len(errors) > 0:
+            raise PascuaFieldError()
+
+    def validate_field(self, key, value, field, errors=None):
         if field.validate(value):
             self.add_attr(key, value)
-        else:
-            self.add_err(PascuaError(
+        elif errors is not None:
+            errors.append(PascuaError(
                 type=error_types.WRONG_FIELD,
                 description='The field ' + key + ' with value "' + str(value) + '" is not ' + field.name,
-                field=key
+                field=key,
+                code=pascua_error_codes['WRONG_TYPE']
             ))
 
     def add_attr(self, key, value):
         self[key] = value
-
-    def add_err(self, error):
-        self.errors.append(error)
 
     @abstractmethod
     def get_fields(self):
@@ -46,9 +49,9 @@ class PascuaModel(dict):
 
         for key in self.fields:
             field = self.fields[key]
-            model_desc[key] = {
-                'type': field.name,
-                'mandatory': field.mandatory
-            }
+            base_description = field.description()
+            base_description['type'] = field.name
+            base_description['mandatory'] = field.mandatory
+            model_desc[key] = base_description
 
         return model_desc

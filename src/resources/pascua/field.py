@@ -8,6 +8,9 @@ class PascuaModelField(dict):
         self.name = name
         self.mandatory = mandatory
 
+    def description(self):
+        return {}
+
     @abstractmethod
-    def validate(self):
+    def validate(self, value):
         pass

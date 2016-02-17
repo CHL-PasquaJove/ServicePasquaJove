@@ -1,0 +1,4 @@
+
+
+class PascuaFieldError(Exception):
+    pass

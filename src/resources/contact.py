@@ -1,20 +1,41 @@
 import falcon
+from db import pascuadb
+from pascua import *
+from base_resource import BaseResource
+from datetime import datetime
 
+
+class ContactModel(PascuaModel):
+    def __init__(self, obj=None, errors=[]):
+        super(ContactModel, self).__init__(obj, errors)
+        self['timestamp'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+
+    @staticmethod
+    def get_fields():
+        return {
+            'name': PascuaString(mandatory=True),
+            'email': PascuaMail(mandatory=True),
+            'comment': PascuaString(mandatory=True)
+        }
 
 # Falcon follows the REST architectural style, meaning (among
 # other things) that you think in terms of resources and state
 # transitions, which map to HTTP verbs.
-class NewContactResource(object):
+class NewContactResource(BaseResource):
     def __init__(self):
-        self.version = 0
-        self.description = ('\nNew Contact:\n'
-                            '   - Insert a contact into database.\n')
+        super(NewContactResource, self).__init__(
+            ('\nNew Contact:\n'
+             '   - Insert a contact into database.\n'), model=ContactModel)
 
-    def on_get(self, req, resp):
-        """Handles GET requests"""
-        resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = self.description
+    def process(self, req, resp, data=None, errors=[]):
+        contact = ContactModel(data, errors=errors)
 
+        insert_contact = contact.copy()
+        pascuadb.contact.insert_one(insert_contact)
+        contact['_id'] = str( insert_contact['_id'] )
+
+        resp.status = falcon.HTTP_201
+        return contact
 
 class GetContactsResource(object):
     def __init__(self):

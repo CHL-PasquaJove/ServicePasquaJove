@@ -32,7 +32,7 @@ class PascuaMail(PascuaString):
                                            mandatory=mandatory)
 
     def validate(self, value, key, errors=None):
-        if not super(PascuaMail, self).validate(value) or not re.match('^.+@.+\..+$', value):
+        if not super(PascuaMail, self).validate(value, key) or not re.match('^.+@.+\..+$', value):
             self.add_errors(PascuaError(
                 type=error_types.WRONG_FIELD,
                 description='The field ' + str(key) + ' with value "' + str(value) + '" is not ' + self.name,

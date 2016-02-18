@@ -3,6 +3,7 @@ import falcon
 import json
 from pascua import PascuaError, pascua_error_types, PascuaFieldError
 from error_codes import pascua_error_codes
+import re
 
 
 class BaseResource(object):
@@ -41,7 +42,8 @@ class BaseResource(object):
         self.respond (req, resp, response, errors)
 
     def get_data(self, req, resp, errors):
-        if req.content_type != self.content_type:
+        content_type = re.search("(" + self.content_type + ")", req.content_type, re.IGNORECASE)
+        if content_type is None:
             resp.status = falcon.HTTP_400
             errors.append(PascuaError(
                 type=pascua_error_types.WRONG_REQUEST,
@@ -50,7 +52,7 @@ class BaseResource(object):
             ))
             return None
 
-        if req.content_type == 'application/json':
+        if content_type.group() == 'application/json':
             try:
                 data = json.loads(req.stream.read())
                 return data

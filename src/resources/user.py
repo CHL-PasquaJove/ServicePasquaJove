@@ -48,6 +48,7 @@ class NewUserResource(BaseResource):
                 description='Duplicated email.',
                 code=pascua_error_codes['DUPLICATED_USER_EMAIL']
             ))
+            resp.status = falcon.HTTP_409
             return
 
         pascuadb.register.insert_one(insert_user)

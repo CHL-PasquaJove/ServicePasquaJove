@@ -110,6 +110,28 @@ class PascuaInteger(PascuaModelField):
 # ################################################ End of PASCUA NUMBERS ############################################# #
 
 
+# ################################################## PASCUA NUMBERS ################################################## #
+
+class PascuaBoolean(PascuaModelField):
+    def __init__(self, mandatory=False):
+        super(PascuaBoolean, self).__init__('Boolean',
+                                            mandatory=mandatory)
+
+    def validate(self, value, key, errors=None):
+        if not isinstance(value, bool):
+            self.add_errors(PascuaError(
+                type=error_types.WRONG_FIELD,
+                description='The field ' + str(key) + ' with value "' + str(value) + '" is not ' + self.name,
+                field=key,
+                code=pascua_error_codes['WRONG_TYPE']
+            ), errors)
+            return False
+
+        return True
+
+# ################################################ End of PASCUA NUMBERS ############################################# #
+
+
 # ################################################### PASCUA ARRAY ################################################### #
 
 class PascuaArray(PascuaModelField):

@@ -20,10 +20,10 @@ class UserModel(PascuaModel):
             'phone': PascuaPhone(mandatory=True),
             'group': PascuaString(mandatory=True),
             'invitedBy': PascuaString(mandatory=True),
-            'diabetes': PascuaBoolean(),
-            'celiaq': PascuaBoolean(),
-            'alergia': PascuaBoolean(),
-            'others': PascuaBoolean()
+            'food': PascuaArray(
+                PascuaDomain(["diabetes", "celiac", "allergies", "other"]),
+                mandatory=True
+            )
         }
 
 

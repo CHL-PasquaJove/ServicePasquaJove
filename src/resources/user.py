@@ -4,6 +4,10 @@ from pascua import *
 from base_resource import BaseResource
 from datetime import datetime
 
+import smtplib
+import os
+from email.mime.text import MIMEText
+
 
 class UserModel(PascuaModel):
     def __init__(self, obj=None, errors=[]):
@@ -25,6 +29,11 @@ class UserModel(PascuaModel):
                 mandatory=True
             )
         }
+
+    def full_name(self):
+        if 'surname' in self:
+            return self['name'] + ' ' + self['surname']
+        return self['name']
 
 
 # Falcon follows the REST architectural style, meaning (among
@@ -54,8 +63,40 @@ class NewUserResource(BaseResource):
         pascuadb.register.insert_one(insert_user)
         user['_id'] = str( insert_user['_id'] )
 
+        # Send an email
+        self.send_registration_mail(user)
+
         resp.status = falcon.HTTP_201
         return user
+
+    def send_registration_mail(self, user):
+        # Open a plain text file for reading.  For this example, assume that
+        # the text file contains only ASCII characters.
+        textfile = os.path.dirname(__file__) + '/mails/registro.html'
+        toaddrs = user['email']
+
+        username = os.environ['PASQUAJOVE_MAIL_ADDRESS']
+        password = os.environ['PASQUAJOVE_MAIL_PASSWORD']
+
+        # Read mail
+        fp = open(textfile, 'rb')
+        content = fp.read()
+        fp.close()
+
+        # Prepare email
+        msg = MIMEText(content, 'html')
+        msg['Subject'] = 'Registro completado'
+        msg['From'] = 'Responsables Pasqua Jove'
+        msg['To'] = toaddrs
+
+        # Send the message via our own SMTP server, but don't include the
+        # envelope header.
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.ehlo()
+        server.starttls()
+        server.login(username, password)
+        server.sendmail(username, [toaddrs], msg.as_string())
+        server.quit()
 
 
 class GetUsersResource(BaseResource):

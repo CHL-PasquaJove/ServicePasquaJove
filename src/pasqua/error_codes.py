@@ -1,13 +1,15 @@
 import falcon
-from pascua import pascua_error_codes
+from framework import pascua_error_codes
 
 pascua_error_codes['INVALID_JSON'] = 1 | pascua_error_codes['NON_BASIC_ERROR']
 pascua_error_codes['INVALID_CONTENT_TYPE'] = 2 | pascua_error_codes['NON_BASIC_ERROR']
 pascua_error_codes['DUPLICATED_USER_EMAIL'] = 3 | pascua_error_codes['NON_BASIC_ERROR']
+pascua_error_codes['NON_RESPONSABLE'] = 4 | pascua_error_codes['NON_BASIC_ERROR']
+pascua_error_codes['WRONG_PASSWORD'] = 5 | pascua_error_codes['NON_BASIC_ERROR']
 
 
 # Falcon follows the REST architectural style, meaning (among
-# other things) that you think in terms of resources and state
+# other things) that you think in terms of pasqua and state
 # transitions, which map to HTTP verbs.
 class ErrorCodesResource(object):
     def __init__(self):

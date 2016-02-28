@@ -1,8 +1,6 @@
 import falcon
 from db import pascuadb
-from pascua import *
-from base_resource import BaseResource
-from datetime import datetime
+from framework import *
 
 
 class ContactModel(PascuaModel):
@@ -18,8 +16,9 @@ class ContactModel(PascuaModel):
             'comment': PascuaString(mandatory=True)
         }
 
+
 # Falcon follows the REST architectural style, meaning (among
-# other things) that you think in terms of resources and state
+# other things) that you think in terms of pasqua and state
 # transitions, which map to HTTP verbs.
 class NewContactResource(BaseResource):
     def __init__(self):
@@ -36,6 +35,7 @@ class NewContactResource(BaseResource):
 
         resp.status = falcon.HTTP_201
         return contact
+
 
 class GetContactsResource(object):
     def __init__(self):

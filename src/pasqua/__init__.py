@@ -5,16 +5,16 @@ from error_codes import ErrorCodesResource
 
 
 def init(app):
-    # User resources
+    # User pasqua
     app.add_route('/api/newUser', NewUserResource())
     app.add_route('/api/getUsers', GetUsersResource())
 
-    # Contact resources
+    # Contact pasqua
     app.add_route('/api/newContact', NewContactResource())
     app.add_route('/api/getContacts', GetContactsResource())
 
-    # Login resources
+    # Login pasqua
     app.add_route('/api/login', LoginResource())
 
-    # Login resources
+    # Login pasqua
     app.add_route('/error-codes.js', ErrorCodesResource())

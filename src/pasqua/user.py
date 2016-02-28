@@ -1,12 +1,11 @@
-import falcon
-from db import pascuadb
-from pascua import *
-from base_resource import BaseResource
-from datetime import datetime
-
 import smtplib
-import os
+from datetime import datetime
 from email.mime.text import MIMEText
+
+import falcon
+import os
+from db import pascuadb
+from framework import *
 
 
 class UserModel(PascuaModel):
@@ -37,7 +36,7 @@ class UserModel(PascuaModel):
 
 
 # Falcon follows the REST architectural style, meaning (among
-# other things) that you think in terms of resources and state
+# other things) that you think in terms of pasqua and state
 # transitions, which map to HTTP verbs.
 class NewUserResource(BaseResource):
     def __init__(self):
@@ -69,7 +68,8 @@ class NewUserResource(BaseResource):
         resp.status = falcon.HTTP_201
         return user
 
-    def send_registration_mail(self, user):
+    @staticmethod
+    def send_registration_mail(user):
         # Open a plain text file for reading.  For this example, assume that
         # the text file contains only ASCII characters.
         textfile = os.path.dirname(__file__) + '/mails/registro.html'
@@ -103,7 +103,14 @@ class GetUsersResource(BaseResource):
     def __init__(self):
         super(GetUsersResource, self).__init__(
             ('\nGet Users:\n'
-             '   - Get all users from the database. Login needed.\n'))
+             '   - Get all users from the database. Login needed.\n'), content_type=None)
 
-    def process(self, req, resp, errors):
-        pass
+    def process(self, req, resp, data=None, errors=[]):
+        users = []
+        docs = pascuadb.register.find()
+        for doc in docs:
+            user = UserModel(doc)
+            user['_id'] = str ( doc['_id'] )
+            users.append(user)
+
+        return users

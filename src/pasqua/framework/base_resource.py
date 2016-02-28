@@ -1,18 +1,21 @@
 from abc import ABCMeta, abstractmethod
 import falcon
 import json
-from pascua import PascuaError, pascua_error_types, PascuaFieldError
-from error_codes import pascua_error_codes
+from errors import PascuaError
+import error_types
+from exceptions import PascuaFieldError
+from base_error_codes import pascua_error_codes
 import re
 
 
 class BaseResource(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, description, version=0, model=None, content_type='application/json'):
+    def __init__(self, description, version=0, model=None, content_type='application/json', res_content_type='application/json'):
         self.version = version
         self.description = self.build_description(description, model)
         self.content_type = content_type
+        self.res_content_type=res_content_type
 
     @staticmethod
     def build_description(description, model):
@@ -25,6 +28,10 @@ class BaseResource(object):
     def on_get(self, req, resp):
         """Handles GET requests"""
         resp.status = falcon.HTTP_200  # This is the default status
+        resp.set_header(
+            'Content-Type',
+            'text/plain'
+        )
         resp.body = self.description
 
     def on_post(self, req, resp):
@@ -42,11 +49,14 @@ class BaseResource(object):
         self.respond (req, resp, response, errors)
 
     def get_data(self, req, resp, errors):
+        if self.content_type is None:
+            return None
+
         content_type = re.search("(" + self.content_type + ")", req.content_type, re.IGNORECASE)
         if content_type is None:
             resp.status = falcon.HTTP_400
             errors.append(PascuaError(
-                type=pascua_error_types.WRONG_REQUEST,
+                type=error_types.WRONG_REQUEST,
                 description='Content-Type must be ' + self.content_type + '.',
                 code=pascua_error_codes['INVALID_CONTENT_TYPE']
             ))
@@ -59,7 +69,7 @@ class BaseResource(object):
             except ValueError:
                 resp.status = falcon.HTTP_400
                 errors.append(PascuaError(
-                    type=pascua_error_types.WRONG_REQUEST,
+                    type=error_types.WRONG_REQUEST,
                     description="Invalid JSON file.",
                     code=pascua_error_codes['INVALID_JSON']
                 ))
@@ -69,6 +79,11 @@ class BaseResource(object):
         pass
 
     def respond(self, req, resp, response, errors):
+        resp.set_header(
+            'Content-Type',
+            self.res_content_type
+        )
+
         if len(errors) == 0:
             if response is not None:
                 resp.body = json.dumps(response)

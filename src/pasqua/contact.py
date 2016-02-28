@@ -37,13 +37,18 @@ class NewContactResource(BaseResource):
         return contact
 
 
-class GetContactsResource(object):
+class GetContactsResource(BaseResource):
     def __init__(self):
-        self.version = 0
-        self.description = ('\nGet Contacts:\n'
-                            '   - Get all contacts from the database. Login needed.\n')
+        super(GetContactsResource, self).__init__(
+            ('\nGet Contacts:\n'
+             '   - Get all contacts from the database. Login needed\n'), content_type=None)
 
-    def on_get(self, req, resp):
-        """Handles GET requests"""
-        resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = self.description
+    def process(self, req, resp, data=None, errors=[]):
+        users = []
+        docs = pascuadb.contact.find()
+        for doc in docs:
+            user = ContactModel(doc)
+            user['_id'] = str ( doc['_id'] )
+            users.append(user)
+
+        return users

@@ -1,5 +1,4 @@
 import smtplib
-from datetime import datetime
 from email.mime.text import MIMEText
 
 import falcon
@@ -11,7 +10,6 @@ from framework import *
 class UserModel(PascuaModel):
     def __init__(self, obj=None, errors=[]):
         super(UserModel, self).__init__(obj, errors)
-        self['timestamp'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
 
     @staticmethod
     def get_fields():

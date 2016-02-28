@@ -6,7 +6,6 @@ from framework import *
 class ContactModel(PascuaModel):
     def __init__(self, obj=None, errors=[]):
         super(ContactModel, self).__init__(obj, errors)
-        self['timestamp'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
 
     @staticmethod
     def get_fields():

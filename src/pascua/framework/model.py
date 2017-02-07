@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from errors import PascuaError
 import error_types
 from exceptions import PascuaFieldError
-from base_error_codes import pascua_error_codes
+from base_error_codes import pasqua_error_codes
 from datetime import datetime
 
 
@@ -28,7 +28,7 @@ class PascuaModel(dict):
                         type=error_types.WRONG_FIELD,
                         description='The field ' + key + ' is mandatory ',
                         field=key,
-                        code=pascua_error_codes['MANDATORY_FIELD']
+                        code=pasqua_error_codes['MANDATORY_FIELD']
                     ))
 
         if errors is not None and len(errors) > 0:

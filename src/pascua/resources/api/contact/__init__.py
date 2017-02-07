@@ -1,0 +1,1 @@
+from contact_resource import GetContactsResource, NewContactResource

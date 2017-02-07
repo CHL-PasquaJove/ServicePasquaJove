@@ -1,25 +1,11 @@
 import falcon
-from db import pascuadb
-from framework import *
+
+from pascua.db import pascuadb
+from pascua.framework import ModelResource
+from pascua.resources.api.contact.contact_model import ContactModel
 
 
-class ContactModel(PascuaModel):
-    def __init__(self, obj=None, errors=[]):
-        super(ContactModel, self).__init__(obj, errors)
-
-    @staticmethod
-    def get_fields():
-        return {
-            'name': PascuaString(mandatory=True),
-            'email': PascuaMail(mandatory=True),
-            'comment': PascuaString(mandatory=True)
-        }
-
-
-# Falcon follows the REST architectural style, meaning (among
-# other things) that you think in terms of pasqua and state
-# transitions, which map to HTTP verbs.
-class NewContactResource(BaseResource):
+class NewContactResource(ModelResource):
     def __init__(self):
         super(NewContactResource, self).__init__(
             ('\nNew Contact:\n'
@@ -36,7 +22,7 @@ class NewContactResource(BaseResource):
         return contact
 
 
-class GetContactsResource(BaseResource):
+class GetContactsResource(ModelResource):
     def __init__(self):
         super(GetContactsResource, self).__init__(
             ('\nGet Contacts:\n'

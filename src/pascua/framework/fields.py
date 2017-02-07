@@ -1,17 +1,18 @@
+# This file contains the possible field types
+#
 from field import PascuaModelField
 import re
 from datetime import datetime
 from errors import PascuaError
-from base_error_codes import pascua_error_codes
+from base_error_codes import pasqua_error_codes
 import error_types
 
 
 # ################################################## PASCUA STRING ################################################### #
 
 class PascuaString(PascuaModelField):
-    def __init__(self, mandatory=False):
-        super(PascuaString, self).__init__('String',
-                                           mandatory=mandatory)
+    def __init__(self, *args, **kwargs):
+        super(PascuaString, self).__init__('String', *args, **kwargs)
 
     def validate(self, value, key, errors=None):
         if not isinstance(value, basestring) or value == "":
@@ -19,17 +20,17 @@ class PascuaString(PascuaModelField):
                 type=error_types.WRONG_FIELD,
                 description='The field ' + str(key) + ' with value "' + str(value) + '" is not ' + self.name,
                 field=key,
-                code=pascua_error_codes['WRONG_TYPE']
+                code=pasqua_error_codes['WRONG_TYPE']
             ), errors)
             return False
 
         return True
 
 
+# Must be (a)@(b).(c)
 class PascuaMail(PascuaString):
-    def __init__(self, mandatory=False):
-        super(PascuaString, self).__init__('Mail',
-                                           mandatory=mandatory)
+    def __init__(self, *args, **kwargs):
+        super(PascuaString, self).__init__('Mail', *args, **kwargs)
 
     def validate(self, value, key, errors=None):
         if not super(PascuaMail, self).validate(value, key) or not re.match('^.+@.+\..+$', value):
@@ -37,7 +38,7 @@ class PascuaMail(PascuaString):
                 type=error_types.WRONG_FIELD,
                 description='The field ' + str(key) + ' with value "' + str(value) + '" is not ' + self.name,
                 field=key,
-                code=pascua_error_codes['WRONG_TYPE']
+                code=pasqua_error_codes['WRONG_TYPE']
             ), errors)
             return False
 
@@ -45,15 +46,14 @@ class PascuaMail(PascuaString):
 
 
 class PascuaPhone(PascuaString):
-    def __init__(self, mandatory=False):
-        super(PascuaString, self).__init__('Phone',
-                                           mandatory=mandatory)
+    def __init__(self, *args, **kwargs):
+        super(PascuaString, self).__init__('Phone', *args, **kwargs)
 
 
+# The string must be one of a finite range of possible values
 class PascuaDomain(PascuaString):
-    def __init__(self, possible_values, mandatory=False):
-        super(PascuaString, self).__init__('Domain',
-                                           mandatory=mandatory)
+    def __init__(self, possible_values, *args, **kwargs):
+        super(PascuaString, self).__init__('Domain', *args, **kwargs)
         self.prepare(possible_values)
 
     def validate(self, value, key, errors=None):
@@ -62,7 +62,7 @@ class PascuaDomain(PascuaString):
                 type=error_types.WRONG_FIELD,
                 description='The field ' + str(key) + ' with value "' + str(value) + '" is not ' + self.name,
                 field=key,
-                code=pascua_error_codes['WRONG_TYPE']
+                code=pasqua_error_codes['WRONG_TYPE']
             ), errors)
             return False
 
@@ -79,10 +79,9 @@ class PascuaDomain(PascuaString):
 
 
 class PascuaDate(PascuaString):
-    def __init__(self, mandatory=False, yearsBefore=0):
-        super(PascuaString, self).__init__('Date',
-                                           mandatory=mandatory)
-        self.yearsBefore = yearsBefore
+    def __init__(self, years_before=0, *args, **kwargs):
+        super(PascuaString, self).__init__('Date', *args, **kwargs)
+        self.years_before = years_before
 
     def validate(self, value, key, errors=None):
         try:
@@ -93,7 +92,7 @@ class PascuaDate(PascuaString):
                 type=error_types.WRONG_FIELD,
                 description='The field ' + str(key) + ' with value "' + str(value) + '" is not ' + self.name,
                 field=key,
-                code=pascua_error_codes['WRONG_TYPE']
+                code=pasqua_error_codes['WRONG_TYPE']
             ), errors)
             return False
 
@@ -103,19 +102,17 @@ class PascuaDate(PascuaString):
 # ################################################## PASCUA NUMBERS ################################################## #
 
 class PascuaInteger(PascuaModelField):
-    def __init__(self, mandatory=False):
-        super(PascuaInteger, self).__init__('Integer',
-                                            mandatory=mandatory)
+    def __init__(self, *args, **kwargs):
+        super(PascuaInteger, self).__init__('Integer', *args, **kwargs)
 
 # ################################################ End of PASCUA NUMBERS ############################################# #
 
 
-# ################################################## PASCUA NUMBERS ################################################## #
+# ################################################## PASCUA BOOLEANS ################################################# #
 
 class PascuaBoolean(PascuaModelField):
-    def __init__(self, mandatory=False):
-        super(PascuaBoolean, self).__init__('Boolean',
-                                            mandatory=mandatory)
+    def __init__(self, *args, **kwargs):
+        super(PascuaBoolean, self).__init__('Boolean', *args, **kwargs)
 
     def validate(self, value, key, errors=None):
         if not isinstance(value, bool):
@@ -123,21 +120,20 @@ class PascuaBoolean(PascuaModelField):
                 type=error_types.WRONG_FIELD,
                 description='The field ' + str(key) + ' with value "' + str(value) + '" is not ' + self.name,
                 field=key,
-                code=pascua_error_codes['WRONG_TYPE']
+                code=pasqua_error_codes['WRONG_TYPE']
             ), errors)
             return False
 
         return True
 
-# ################################################ End of PASCUA NUMBERS ############################################# #
+# ############################################### End of PASCUA BOOLEANS ############################################# #
 
 
 # ################################################### PASCUA ARRAY ################################################### #
 
 class PascuaArray(PascuaModelField):
-    def __init__(self, field, mandatory=False):
-        super(PascuaArray, self).__init__('Array',
-                                          mandatory=mandatory)
+    def __init__(self, field, *args, **kwargs):
+        super(PascuaArray, self).__init__('Array', *args, **kwargs)
         self.field = field
 
     def validate(self, value, key, errors=None):
@@ -146,7 +142,7 @@ class PascuaArray(PascuaModelField):
                 type=error_types.WRONG_FIELD,
                 description='The field ' + str(key) + ' with value "' + str(value) + '" is not ' + self.name,
                 field=key,
-                code=pascua_error_codes['WRONG_TYPE']
+                code=pasqua_error_codes['WRONG_TYPE']
             ), errors)
             return False
 
@@ -160,7 +156,7 @@ class PascuaArray(PascuaModelField):
                 type=error_types.WRONG_FIELD,
                 description='The array ' + str(key) + ' is emtpy and it''s mandatory',
                 field=key,
-                code=pascua_error_codes['WRONG_TYPE']
+                code=pasqua_error_codes['WRONG_TYPE']
             ), errors)
             return False
 
@@ -174,7 +170,7 @@ class PascuaArray(PascuaModelField):
                 type=error_types.WRONG_FIELD,
                 description='The field ' + str(key) + ' with value contains an item with errors',
                 field=key,
-                code=pascua_error_codes['WRONG_TYPE'],
+                code=pasqua_error_codes['WRONG_TYPE'],
                 errors=child_errors
             ), errors)
             return False

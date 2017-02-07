@@ -1,0 +1,11 @@
+# Mail service
+export PASQUAJOVE_MAIL_ADDRESS = 'myaddress@gmail.com'
+export PASQUAJOVE_MAIL_PASSWORD = 'mysecretpassword'
+
+# Database
+export PASQUAJOVE_DATABASE_NAME='databasename'
+export PASQUAJOVE_DATABASE_URL='mongodb://some.address.foo:port/'
+
+# Login
+export PASQUAJOVE_JWT_SECRET='supersecret'
+

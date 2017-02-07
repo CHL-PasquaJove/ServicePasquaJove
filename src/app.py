@@ -1,6 +1,6 @@
 # Let's get this party started
 import falcon
-import pasqua
+import pascua
 
 
 def cors_middleware(request, response, params):
@@ -21,4 +21,4 @@ def cors_middleware(request, response, params):
 
 # falcon.API instances are callable WSGI apps
 app = falcon.API(before=[cors_middleware])
-pasqua.init(app)
+pascua.init(app)

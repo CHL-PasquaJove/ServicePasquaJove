@@ -4,11 +4,15 @@ import json
 from errors import PascuaError
 import error_types
 from exceptions import PascuaFieldError
-from base_error_codes import pascua_error_codes
+from base_error_codes import pasqua_error_codes
 import re
 
 
 class BaseResource(object):
+    pass
+
+
+class ModelResource(BaseResource):
     __metaclass__ = ABCMeta
 
     def __init__(self, description, version=0, model=None, content_type='application/json', res_content_type='application/json'):
@@ -58,7 +62,7 @@ class BaseResource(object):
             errors.append(PascuaError(
                 type=error_types.WRONG_REQUEST,
                 description='Content-Type must be ' + self.content_type + '.',
-                code=pascua_error_codes['INVALID_CONTENT_TYPE']
+                code=pasqua_error_codes['INVALID_CONTENT_TYPE']
             ))
             return None
 
@@ -71,7 +75,7 @@ class BaseResource(object):
                 errors.append(PascuaError(
                     type=error_types.WRONG_REQUEST,
                     description="Invalid JSON file.",
-                    code=pascua_error_codes['INVALID_JSON']
+                    code=pasqua_error_codes['INVALID_JSON']
                 ))
 
     @abstractmethod

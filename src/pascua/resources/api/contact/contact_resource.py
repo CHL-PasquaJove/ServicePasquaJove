@@ -26,7 +26,7 @@ class GetContactsResource(ModelResource):
     def __init__(self):
         super(GetContactsResource, self).__init__(
             ('\nGet Contacts:\n'
-             '   - Get all contacts from the database. Login needed\n'), content_type=None)
+             '   - Get all contacts from the database. Login needed\n'))
 
     def process(self, req, resp, data=None, errors=[]):
         users = []

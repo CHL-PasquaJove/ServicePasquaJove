@@ -8,7 +8,7 @@ class ContactModel(PascuaModel):
     @staticmethod
     def get_fields():
         return {
-            'name': PascuaString(mandatory=True),
-            'email': PascuaMail(mandatory=True),
-            'comment': PascuaString(mandatory=True)
+            'name': PascuaString(),
+            'email': PascuaMail(),
+            'comment': PascuaString()
         }

@@ -9,13 +9,13 @@ class UserModel(PascuaModel):
     @staticmethod
     def get_fields():
         return {
-            'name': PascuaString(mandatory=True),
-            'surname': PascuaString(),
-            'email': PascuaMail(mandatory=True),
-            'birth': PascuaDate(mandatory=True, years_before=0),
-            'phone': PascuaPhone(mandatory=True),
-            'group': PascuaString(mandatory=True),
-            'invitedBy': PascuaString(mandatory=False),
+            'name': PascuaString(),
+            'surname': PascuaString(mandatory=False),
+            'email': PascuaMail(),
+            'birth': PascuaDate(years_before=0),
+            'phone': PascuaPhone(),
+            'group': PascuaString(mandatory=False),
+            'invitedBy': PascuaString(),
             'food': PascuaArray(
                 PascuaDomain(["diabetes", "celiac", "allergies", "other"]),
                 mandatory=True

@@ -14,8 +14,8 @@ class LoginModel(PascuaModel):
     @staticmethod
     def get_fields():
         return {
-            'email': PascuaString(mandatory=True),
-            'password': PascuaString(mandatory=True)
+            'email': PascuaString(),
+            'password': PascuaString()
         }
 
     def encode(self):

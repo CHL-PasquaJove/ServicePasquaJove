@@ -23,6 +23,7 @@ def send_mail(mail_name, to, subject='No subject'):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
+
     server.login(mail_address, mail_password)
     server.sendmail(mail_address, [to], msg.as_string())
     server.quit()

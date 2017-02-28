@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 class PascuaModelField(dict):
     __metaclass__ = ABCMeta
 
-    def __init__(self, name, mandatory=False):
+    def __init__(self, name, mandatory=True):
         self.name = name
         self.mandatory = mandatory
 

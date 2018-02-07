@@ -17,7 +17,8 @@ class UserModel(PascuaModel):
             'group': PascuaString(mandatory=False),
             'invitedBy': PascuaString(),
             'food': PascuaArray(
-                PascuaDomain(["diabetes", "celiac", "allergies", "other"], mandatory=False)
+                PascuaDomain(["diabetes", "celiac", "allergies", "other"], mandatory=False),
+                mandatory=False
             )
         }
 

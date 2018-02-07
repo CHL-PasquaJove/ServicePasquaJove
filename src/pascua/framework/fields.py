@@ -15,10 +15,19 @@ class PascuaString(PascuaModelField):
         super(PascuaString, self).__init__('String', *args, **kwargs)
 
     def validate(self, value, key, errors=None):
-        if not isinstance(value, basestring) or value == "":
+        if not isinstance(value, basestring):
             self.add_errors(PascuaError(
                 type=error_types.WRONG_FIELD,
                 description='The field ' + str(key) + ' with value "' + str(value) + '" is not ' + self.name,
+                field=key,
+                code=pasqua_error_codes['WRONG_TYPE']
+            ), errors)
+            return False
+
+        if self.mandatory and value == "":
+            self.add_errors(PascuaError(
+                type=error_types.WRONG_FIELD,
+                description='The field ' + str(key) + ' don\'t allows empty strings',
                 field=key,
                 code=pasqua_error_codes['WRONG_TYPE']
             ), errors)

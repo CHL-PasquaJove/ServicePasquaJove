@@ -1,0 +1,10 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+#if [ -f /tmp/env ]; then
+#    source /tmp/env
+#fi
+
+pushd /srv/src > /dev/null
+	gunicorn app:app -b 0.0.0.0:5000
+popd > /dev/null

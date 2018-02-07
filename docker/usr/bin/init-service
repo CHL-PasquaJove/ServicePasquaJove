@@ -1,0 +1,13 @@
+#!/bin/sh
+mkdir -p /srv/data/db
+
+mkdir -p /srv/data/log
+mkdir -p /srv/data/log/nginx
+
+mkdir -p /srv/data/lib/nginx
+
+fakeroot nginx # Turn on nginx
+mongod --config /etc/mongodb/mongodb.conf & > /srv/data/log/mongodb-out.log
+pasqua-jove-service & > /srv/data/log/pasqua-jove-service.log
+
+tail -f /dev/null

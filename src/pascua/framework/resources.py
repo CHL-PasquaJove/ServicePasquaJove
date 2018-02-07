@@ -1,36 +1,48 @@
 from abc import ABCMeta, abstractmethod
-import falcon
+import re
 import json
+import falcon
+
 from errors import PascuaError
 import error_types
 from exceptions import PascuaFieldError
 from base_error_codes import pasqua_error_codes
-import re
+from logger import logger
 
 
 class BaseResource(object):
+    "Base resource for the framework"
     pass
 
 
 class ModelResource(BaseResource):
     __metaclass__ = ABCMeta
 
-    def __init__(self, description, version=0, model=None, content_type='application/json', res_content_type='application/json'):
+    def __init__(self, description, version=0, model=None,
+                 content_type='application/json',
+                 res_content_type='application/json'):
         self.version = version
         self.description = self.build_description(description, model)
         self.content_type = content_type
-        self.res_content_type=res_content_type
+        self.res_content_type = res_content_type
+
+        self.logger = logger
 
     @staticmethod
     def build_description(description, model):
         if model is not None:
             m = model()
-            description += "\nModel structure:\n" + json.dumps(m.descrive(), sort_keys=True, indent=2)
+            description += (
+                "\nModel structure:\n" +
+                json.dumps(m.descrive(), sort_keys=True, indent=2)
+            )
 
         return description
 
     def on_get(self, req, resp):
         """Handles GET requests"""
+        self.logger.info("Get received on url \"" + req.url + "\"")
+
         resp.status = falcon.HTTP_200  # This is the default status
         resp.set_header(
             'Content-Type',
@@ -39,18 +51,22 @@ class ModelResource(BaseResource):
         resp.body = self.description
 
     def on_post(self, req, resp):
+        self.logger.info("Post received on url \"" + req.url + "\"")
+
         errors = []
         response = None
 
         data = self.get_data(req, resp, errors)
         if len(errors) == 0:
             try:
-                response = self.process (req, resp, data=data, errors=errors)
+                response = self.process(req, resp, data=data, errors=errors)
             except PascuaFieldError:
+                self.logger.debug(
+                    "Error processing the specific process function")
+                self.logger.debug(errors)
                 resp.status = falcon.HTTP_400
-                pass
 
-        self.respond (req, resp, response, errors)
+        self.respond(req, resp, response, errors)
 
     def get_data(self, req, resp, errors):
         if self.content_type is None:
@@ -92,4 +108,4 @@ class ModelResource(BaseResource):
             if response is not None:
                 resp.body = json.dumps(response)
         else:
-            resp.body = json.dumps({ 'errors': errors })
+            resp.body = json.dumps({'errors': errors})

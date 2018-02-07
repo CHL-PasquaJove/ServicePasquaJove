@@ -47,12 +47,13 @@ class GetUsersResource(ModelResource):
             ('\nGet Users:\n'
              '   - Get all users from the database. Login needed.\n'), content_type=None)
 
-    def process(self, req, resp, data=None, **kwargs):
+    def process(self, req, resp, data=None, errors=[]):
         users = []
         docs = pascuadb.register.find()
+        self.logger.debug('There are "' + str(docs.count()) + '" users registered')
         for doc in docs:
-            user = UserModel(doc)
-            user['_id'] = str ( doc['_id'] )
+            user = UserModel(doc, errors=errors)
+            user['_id'] = str(doc['_id'])
             users.append(user)
 
         return users

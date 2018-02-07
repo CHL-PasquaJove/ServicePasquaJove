@@ -12,3 +12,10 @@ mail_from = 'Responsables Pasqua Jove'
 
 # Login configuration
 jwt_secret = os.environ['PASQUAJOVE_JWT_SECRET']
+
+# Log level
+log_level = ""
+if 'PASQUAJOVE_LOG_LEVEL' in os.environ:
+    log_level = os.environ['PASQUAJOVE_LOG_LEVEL']
+else:
+    log_level = "INFO"

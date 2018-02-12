@@ -16,19 +16,19 @@ class NewUserResource(ModelResource):
         user = UserModel(data, errors=errors)
 
         insert_user = user.copy()
-        check_duplied_mail = pascuadb.register.find_one({ 'email': insert_user['email'] })
-        if check_duplied_mail is not None:
-            errors.append(PascuaError(
-                type=pasqua_error_types.QUERY_ERROR,
-                field='email',
-                description='Duplicated email.',
-                code=pasqua_error_codes['DUPLICATED_USER_EMAIL']
-            ))
-            resp.status = falcon.HTTP_409
-            return
+        # check_duplied_mail = pascuadb.register.find_one({ 'email': insert_user['email'] })
+        # if check_duplied_mail is not None:
+        #     errors.append(PascuaError(
+        #         type=pasqua_error_types.QUERY_ERROR,
+        #         field='email',
+        #         description='Duplicated email.',
+        #         code=pasqua_error_codes['DUPLICATED_USER_EMAIL']
+        #     ))
+        #     resp.status = falcon.HTTP_409
+        #     return
 
         pascuadb.register.insert_one(insert_user)
-        user['_id'] = str( insert_user['_id'] )
+        user['_id'] = str(insert_user['_id'])
 
         # Send an email
         self.send_registration_mail(user)

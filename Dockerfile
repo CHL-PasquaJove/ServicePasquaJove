@@ -19,6 +19,8 @@ RUN pip install -r requirements.txt
 
 ### Configure mongodb
 
+ENV ENABLE_MONGODB=true
+
 EXPOSE 27017
 
 ### Configure nginx
